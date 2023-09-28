@@ -14,6 +14,13 @@ class User < ApplicationRecord
   has_many :notification_timings, through: :user_notification_timings
   has_one_attached :avatar
 
+  has_many :followed_users, foreign_key: :follower_id, class_name: 'Following', dependent: :destroy,
+                            inverse_of: :followed
+  has_many :followees, through: :followed_users, source: :followed
+  has_many :following_users, foreign_key: :followed_id, class_name: 'Following', dependent: :destroy,
+                             inverse_of: :follower
+  has_many :followers, through: :following_users, source: :follower
+
   validates :password, length: { minimum: 3 }, if: -> { new_record? || changes[:crypted_password] }
   validates :password, confirmation: true, if: -> { new_record? || changes[:crypted_password] }
   validates :password_confirmation, presence: true, if: -> { new_record? || changes[:crypted_password] }
