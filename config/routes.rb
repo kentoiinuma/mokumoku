@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 Rails.application.routes.draw do
   mount LetterOpenerWeb::Engine, at: "/letter_opener" if Rails.env.development?
   get 'events/index'
@@ -25,6 +23,7 @@ Rails.application.routes.draw do
     resource :all_reads, only: %i[create]
   end
 
+
   namespace :mypage do
     root 'event_calendars#show'
     resource :event_calendar, only: %i[show]
@@ -36,9 +35,14 @@ Rails.application.routes.draw do
     resource :password_change, only: %i[show update]
   end
 
+
   namespace :api, defaults: { format: :json } do
     namespace :me do
       resources :events, only: %i[index]
     end
   end
+
+  resources :followings, only: [:create, :destroy]
+
+  resources :profiles, only: %i[show]
 end
